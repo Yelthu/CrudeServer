@@ -12,7 +12,11 @@ A clean, modern, fully working, production-ready backend with full CRUD for task
 - Local & Docker development support
 - Ready for JWT auth, Swagger, CI/CD
 
+---
+
 ## Project Structure
+
+```text
 .
 ├── prisma/
 │   ├── schema.prisma
@@ -31,6 +35,7 @@ A clean, modern, fully working, production-ready backend with full CRUD for task
 ├── .env
 ├── jest.config.ts
 └── README.md
+```
 
 ## Quick Start (Docker – recommended)
 
@@ -58,32 +63,31 @@ npm run dev
 
 ## API Endpoints
 Method,URL,Description,Body / Query
-POST,/api/tasks,Create task,"{ title, description? }"
-GET,/api/tasks,List tasks,?completed=true&search=...
-GET,/api/tasks/:id,Get task,—
-PATCH,/api/tasks/:id,Update task,"{ title?, description?, completed? }"
-DELETE,/api/tasks/:id,Delete task,—
+- POST,/api/tasks,Create task,"{ title, description? }"
+- GET,/api/tasks,List tasks,?completed=true&search=...
+- GET,/api/tasks/:id,Get task,—
+- PATCH,/api/tasks/:id,Update task,"{ title?, description?, completed? }"
+- DELETE,/api/tasks/:id,Delete task,—
 
 ## Scripts
-npm run dev               # Local dev (uses localhost DB)
-npm run docker:up         # Full Docker stack
-npm run test              # Run Jest tests (mocked – super fast)
-npm run test:watch        # Watch mode
-npm run test:coverage     # Coverage report
-docker compose exec api npx prisma migrate dev   # Future migrations
-docker compose exec api npx prisma studio        # Browse DB
+- npm run dev               # Local dev (uses localhost DB)
+- npm run docker:up         # Full Docker stack
+- npm run test              # Run Jest tests (mocked – super fast)
+- npm run test:watch        # Watch mode
+- npm run test:coverage     # Coverage report
+- docker compose exec api npx prisma migrate dev   # Future migrations
+- docker compose exec api npx prisma studio        # Browse DB
 
-## .env (required)
+# .env (required)
 # Local development
-DATABASE_URL=postgresql://postgres:password@localhost:5432/tasksdb?schema=public
+- DATABASE_URL=postgresql://postgres:password@localhost:5432/tasksdb?schema=public
 
 # Docker (automatically passed by docker-compose.yml)
-DATABASE_URL_DOCKER=postgresql://postgres:password@postgres:5432/tasksdb?schema=public
-
-PORT=3000
+- DATABASE_URL_DOCKER=postgresql://postgres:password@postgres:5432/tasksdb?schema=public
+- PORT=3000
 
 ## Testing
 npm run test
-# → 5 passing tests in ~100ms
+## → 5 passing tests in ~100ms
 
-# More scripts are available in package.json
+## More scripts are available in package.json
