@@ -88,6 +88,7 @@ Method,URL,Description,Body / Query
 
 ## Testing
 npm run test
-## → 5 passing tests in ~100ms
+<img width="1440" height="385" alt="Screenshot 2025-11-24 at 18 58 55" src="https://github.com/user-attachments/assets/2a0a31a0-ffe9-43d0-b77e-4abca8aabbf6" />
+
 
 ## More scripts are available in package.json
