@@ -1,7 +1,9 @@
 import {Request, Response} from 'express';
 import {prisma} from "../prisma";
+import {z} from "zod";
 import {
     createTaskSchema,
+    updateTaskSchema,
     querySchema,
     idSchema,
 } from "../schemas/task.schema";
@@ -93,6 +95,33 @@ export const getTaskById = async (req: Request, res: Response) => {
     if (!task) {
         return res.status(404).json({message: "Task not found"});
     }
+
+    return res.json(task);
+};
+
+export const updateTask = async (req: Request, res: Response) => {
+    const idParsed = idSchema.safeParse(req.params);
+    const bodyParsed = updateTaskSchema.safeParse(req.body);
+
+    if (!idParsed.success)
+        return res.status(400).json({message: "Invalid ID", issues: idParsed.error.issues});
+
+    if (!bodyParsed.success) {
+        return res.status(400).json({
+            message: "Validation failed",
+            errors: z.treeifyError(bodyParsed.error),
+        });
+    }
+
+    const id = Number(idParsed.data.id);
+
+    const existing = await prisma.task.findUnique({where: {id}});
+    if (!existing) return res.status(404).json({message: "Task not found"});
+
+    const task = await prisma.task.update({
+        where: {id},
+        data: bodyParsed.data,
+    });
 
     return res.json(task);
 };
