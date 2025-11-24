@@ -23,3 +23,9 @@ export const querySchema = z.object({
 export const idSchema = z.object({
     id: z.string().regex(/^\d+$/, "ID must be a valid number"),
 });
+
+// Handle Zod Error for consistency across all routes
+export const handleZodError = (error: z.ZodError) => ({
+    message: "Validation failed",
+    errors: z.treeifyError(error),
+});

@@ -6,21 +6,16 @@ import {
     updateTaskSchema,
     querySchema,
     idSchema,
+    handleZodError
 } from "../schemas/task.schema";
 
 export const createTask = async (req: Request, res: Response) => {
-    const result = createTaskSchema.safeParse(req.body);
-    if (!result.success) {
-        const errors: Record<string, string[]> = {};
-        result.error.issues.forEach((issue) => {
-            const key = issue.path[0] as string;
-            if (!errors[key]) errors[key] = [];
-            errors[key].push(issue.message);
-        });
-        return res.status(400).json({errors});
+    const parseResult = createTaskSchema.safeParse(req.body);
+    if (!parseResult.success) {
+        return res.status(400).json(handleZodError(parseResult.error));
     }
 
-    const task = await prisma.task.create({data: result.data});
+    const task = await prisma.task.create({data: parseResult.data});
     return res.status(200).json(task);
 }
 
@@ -28,10 +23,7 @@ export const getTasks = async (req: Request, res: Response) => {
     const parseResult = querySchema.safeParse(req.query);
 
     if (!parseResult.success) {
-        return res.status(400).json({
-            message: "Invalid query parameters",
-            issues: parseResult.error.issues,
-        });
+        return res.status(400).json(handleZodError(parseResult.error));
     }
 
     const {completed, search, page = "1", limit = "10"} = parseResult.data;
@@ -82,10 +74,7 @@ export const getTaskById = async (req: Request, res: Response) => {
     const parseResult = idSchema.safeParse(req.params);
 
     if (!parseResult.success) {
-        return res.status(400).json({
-            message: "Invalid task ID",
-            issues: parseResult.error.issues,
-        });
+        return res.status(400).json(handleZodError(parseResult.error));
     }
 
     const id = parseInt(parseResult.data.id);
@@ -124,4 +113,21 @@ export const updateTask = async (req: Request, res: Response) => {
     });
 
     return res.json(task);
+};
+
+export const deleteTask = async (req: Request, res: Response) => {
+    const parsed = idSchema.safeParse(req.params);
+
+    if (!parsed.success) {
+        return res.status(400).json(handleZodError(parsed.error));
+    }
+
+    const id = Number(parsed.data.id);
+
+    const existing = await prisma.task.findUnique({where: {id}});
+    if (!existing) return res.status(404).json({message: "Task not found"});
+
+    await prisma.task.delete({where: {id}});
+
+    return res.json({message: "Task deleted successfully"});
 };
