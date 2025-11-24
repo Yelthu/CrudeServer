@@ -13,7 +13,10 @@
     "prisma:studio": "npx prisma studio",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down",
-    "docker:rebuild": "docker compose build --no-cache api && docker compose up -d"
+    "docker:rebuild": "docker compose build --no-cache api && docker compose up -d",
+    "test": "jest --detectOpenHandles --forceExit",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.0.0",
@@ -24,9 +27,14 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.5",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.2.0",
     "prisma": "^7.0.0",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"

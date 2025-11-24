@@ -1,6 +1,5 @@
 import {Request, Response} from 'express';
 import {prisma} from "../prisma";
-import {z} from "zod";
 import {
     createTaskSchema,
     updateTaskSchema,
@@ -16,7 +15,7 @@ export const createTask = async (req: Request, res: Response) => {
     }
 
     const task = await prisma.task.create({data: parseResult.data});
-    return res.status(200).json(task);
+    return res.status(201).json(task);
 }
 
 export const getTasks = async (req: Request, res: Response) => {
@@ -92,14 +91,12 @@ export const updateTask = async (req: Request, res: Response) => {
     const idParsed = idSchema.safeParse(req.params);
     const bodyParsed = updateTaskSchema.safeParse(req.body);
 
-    if (!idParsed.success)
-        return res.status(400).json({message: "Invalid ID", issues: idParsed.error.issues});
+    if (!idParsed.success) {
+        return res.status(400).json(handleZodError(idParsed.error));
+    }
 
     if (!bodyParsed.success) {
-        return res.status(400).json({
-            message: "Validation failed",
-            errors: z.treeifyError(bodyParsed.error),
-        });
+        return res.status(400).json(handleZodError(bodyParsed.error));
     }
 
     const id = Number(idParsed.data.id);
@@ -129,5 +126,5 @@ export const deleteTask = async (req: Request, res: Response) => {
 
     await prisma.task.delete({where: {id}});
 
-    return res.json({message: "Task deleted successfully"});
+    return res.sendStatus(204);
 };
